@@ -1,0 +1,14 @@
+{
+  "name": "sbms",
+  "version": "1.0.0",
+  "description": "Nodejs battery monitoring system for KU-Saen-Saep ship",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "bms"
+  ],
+  "author": "S.Sukprasertchai",
+  "license": "ISC"
+}
