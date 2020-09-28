@@ -44,11 +44,12 @@ let jsonData = {
   , wattString_1 : 0
   , wattString_2 : 0
   , wattString_3 : 0
+  , rpmPort : 0
+  , rpmStarboard : 0
   , input_1: 0
   , input_2: 0
   , input_3: 0
   , input_4: 0
-
 }
 
 //set delimiter
@@ -91,10 +92,12 @@ parser.on('data', function (data) {
   jsonData.wattString_1 = parseInt(strSplit[15], 10);
   jsonData.wattString_2 = parseInt(strSplit[16], 10);
   jsonData.wattString_3 = parseInt(strSplit[17], 10);
-  jsonData.input_1 = parseInt(strSplit[18], 10);
-  jsonData.input_2 = parseInt(strSplit[19], 10);
-  jsonData.input_3 = parseInt(strSplit[20], 10);
-  jsonData.input_4 = parseInt(strSplit[21], 10);
+  jsonData.rpmPort = parseInt(strSplit[18]);
+  jsonData.rpmStarboard = parseInt(strSplit[19]);
+  jsonData.input_1 = parseInt(strSplit[20], 10);
+  jsonData.input_2 = parseInt(strSplit[21], 10);
+  jsonData.input_3 = parseInt(strSplit[22], 10);
+  jsonData.input_4 = parseInt(strSplit[23], 10);
 
   socket.emit('measure-data', jsonData);
 
