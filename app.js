@@ -14,15 +14,16 @@ const exec = require('child_process').exec
   , path = require('path')
   , io = require('socket.io-client')
   , EventEmitter = require('events');
-
 const measuringService = new EventEmitter();
 
-let socket = io.connect('http://192.168.1.10:9010', {
-  reconnection: true,
-  reconnectionDelay: 1000,
-  reconnectionDelayMax : 5000,
-  reconnectionAttempts: Infinity,
-});
+//let socket = io.connect("http://192.168.1.10:9011",{
+// reconnection: true,
+// reconnectionDelay: 1000,
+// reconnetionDelayMax: 5000,
+//reconnectionAttempts: Infinity,
+//});
+
+let socket = io.connect();
 
 
 let jsonData = {
@@ -44,11 +45,12 @@ let jsonData = {
   , wattString_1 : 0
   , wattString_2 : 0
   , wattString_3 : 0
+  , rpmPort : 0
+  , rpmStarboard : 0
   , input_1: 0
   , input_2: 0
   , input_3: 0
   , input_4: 0
-
 }
 
 //set delimiter
@@ -59,20 +61,21 @@ port.pipe(parser)
 
 // port.write(':S00,1111\r');
 
-let readInterValFunc;
+//let readInterValFunc;
 
-function readInterval(){
-  port.write(':M00\r');
-}
+//function readInterval(){
+//  port.write(':M00\r');
+//}
 
 parser.on('data', function (data) {
-  let strIn = data.toString();
+ console.log(data); 
+let strIn = data.toString();
   if(strIn[1] == 'A') {
     console.log("MCU string received have been problems")
     return 0;
   }
   let strSplit = strIn.split(',');
-  // console.log(strSplit);
+  //console.log(strSplit);
   jsonData.gasHF_1 = parseInt(strSplit[0], 10);
   jsonData.gasHF_2 = parseInt(strSplit[1], 10);
   jsonData.gasHF_3 = parseInt(strSplit[2], 10);
@@ -91,10 +94,12 @@ parser.on('data', function (data) {
   jsonData.wattString_1 = parseInt(strSplit[15], 10);
   jsonData.wattString_2 = parseInt(strSplit[16], 10);
   jsonData.wattString_3 = parseInt(strSplit[17], 10);
-  jsonData.input_1 = parseInt(strSplit[18], 10);
-  jsonData.input_2 = parseInt(strSplit[19], 10);
-  jsonData.input_3 = parseInt(strSplit[20], 10);
-  jsonData.input_4 = parseInt(strSplit[21], 10);
+  jsonData.rpmPort = parseInt(strSplit[18]);
+  jsonData.rpmStarboard = parseInt(strSplit[19]);
+  jsonData.input_1 = parseInt(strSplit[20], 10);
+  jsonData.input_2 = parseInt(strSplit[21], 10);
+  jsonData.input_3 = parseInt(strSplit[22], 10);
+  jsonData.input_4 = parseInt(strSplit[23], 10);
 
   socket.emit('measure-data', jsonData);
 
@@ -113,12 +118,12 @@ port.on('close', function (){
 
 socket.on('connect', function (data) {
   socket.emit('message', 'Measuring node 1 has been connected.');
-  readInterValFunc = setInterval(readInterval, 1000);
+  //readInterValFunc = setInterval(readInterval, 1000);
 });
 
 socket.on('disconnect', function () {
   console.log('Server down.');
-  clearInterval(readInterValFunc);
+  //clearInterval(readInterValFunc);
   // port.close(function (err) {
   //   console.log('port closed', err);
   // });
@@ -127,7 +132,7 @@ socket.on('disconnect', function () {
 socket.on('reconnect', function () {
   console.log('server is now online');
   // port.open();
-  readInterValFunc = setInterval(readInterval, 1000);
+  //readInterValFunc = setInterval(readInterval, 1000);
 });
 
 socket.on('reconnect_attempt', function(attemptNumber){
