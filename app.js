@@ -129,6 +129,11 @@ socket.on('disconnect', function () {
   // });
 });
 
+socket.on("io-control", function(data){
+    if(data == "charge") setTimeout(writeIO(':S00,1111\r'), 3000);
+    if(data == "discharge") setTimeout(writeIO(':S00,0000\r'), 3000);
+});
+
 socket.on('reconnect', function () {
   console.log('server is now online');
   // port.open();
@@ -138,4 +143,8 @@ socket.on('reconnect', function () {
 socket.on('reconnect_attempt', function(attemptNumber){
   console.log('reconnecting : ' + attemptNumber);
 });
+
+function writeIO(strinInput){
+    port.write(':S00,1111\r');
+}
 
